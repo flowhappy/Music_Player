@@ -1,0 +1,84 @@
+<!--引入bootstrap-->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"><!--引入jQuery-->
+<script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
+<!--缓慢移动动画-->
+<style>
+  *{
+    transition: 300ms;
+  }
+</style>
+<!--背景-->
+<body style="background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);">
+<!--音乐单ID输入框-->
+<div id="music_id" class="input-group"
+     style="position: fixed;z-index: 999999999999999;opacity: 0.8;transform: translateX(-200px);width: 220px;
+      box-shadow: 0 0 15px white;
+">
+  <span class="input-group-addon">ID</span>
+  <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="请输入歌单ID">
+  <span class="input-group-addon" style="cursor: pointer" onclick="music_reload(this)">确认</span>
+</div>
+<!--音乐播放器-->
+<iframe frameborder="no" style="border: none;box-shadow: none;position: fixed;z-index: 999999999999999;opacity: 0.8;transform: translateX(-82px)"
+        marginwidth="0" marginheight="0" width=110 height=100
+        src="//music.163.com/outchain/player?type=0&id=2399935867&auto=1&height=90"></iframe>
+<script>
+  let flag=0;//判断是否悬浮在播放器上
+  let flag1=0;//判断是否悬浮在输入框上
+  let hide;//隐藏播放器标志
+  let hide1;//隐藏输入框标志
+  let hide2;//隐藏更新后播放器标志
+  //更新音乐播放器
+  function music_reload(tag) {
+    var music_id = $(tag).parent().children('input').val();//获取输入框的ID
+    if (music_id === '') {
+      $(tag).parent().children('input').focus();//如果输入框为空，则聚焦
+      return;
+    }
+    clearInterval(hide);
+    flag=1;
+    $('iframe').attr('src', '//music.163.com/outchain/player?type=0&id=' + music_id + '&auto=1&height=90');
+    $('iframe').css({'transform':'translateX(0px)'});
+    setTimeout(()=>{
+      flag=0;
+      if(!flag){
+        hide2 = setInterval(()=>{
+          $('iframe').css('transform','translateX(-82px)');
+          clearInterval(hide2)
+        },1600)
+      }
+    },2000)
+  }
+  $('iframe').css('margin-top',screen.height * 0.73);//设置播放器的位置
+  $('#music_id').css('margin-top',screen.height * 0.69);//设置输入框的位置
+  $('iframe').mouseleave(function () {//鼠标离开播放器
+    flag=0;
+    $('iframe').css('width','110px');
+    if(!flag){
+      hide = setInterval(()=>{
+        $('iframe').css('transform','translateX(-82px)');
+        clearInterval(hide)
+      },1600)
+    }
+  });
+  $('iframe').mouseenter(function () {//鼠标进入播放器
+    clearInterval(hide);
+    flag=1;
+    $('iframe').css({'transform':'translateX(0px)','width':'330px'});
+  });
+  $('#music_id').mouseenter(function () {//鼠标进入输入框
+    clearInterval(hide1);
+    flag1=1;
+    $('#music_id').css({'transform':'translateX(8px)'});
+  });
+  $('#music_id').mouseleave(function () {//鼠标离开输入框
+    flag1=0;
+    if(!flag1){
+      hide1 = setInterval(()=>{
+        $('#music_id').css('transform','translateX(-200px)');
+        clearInterval(hide1)
+      },1600)
+    }
+  });
+</script>
+</body>
